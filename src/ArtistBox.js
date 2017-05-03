@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default class ArtistBox extends Component {
 
   render() {
-    console.warn('el nombre', this.props.artist.name)
     const { image, name, likes, comments } = this.props.artist
 
     return (

@@ -2,32 +2,30 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
-  Image,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import ArtistBox from './ArtistBox';
+import ArtistList from './ArtistList';
+import { getArtists } from './api-client'
 
 export default class testReactNative extends Component {
 
+  state = {
+    artists: []
+  }
+
+  componentDidMount() {
+    getArtists()
+      .then(data => this.setState({ artists: data }))
+  }
+
   render() {
-    const artist = {
-      image: 'https://buzz.ie/wp-content/uploads/2016/12/chris-martin-israel.jpg',
-      name: 'Chris Martin',
-      likes: 200,
-      comments: 140
-    }
+    const artists = this.state.artists
 
     return (
       <View style={styles.container}>
-        <ArtistBox artist={artist} />
-        <ArtistBox artist={artist} />
-        <ArtistBox artist={artist} />
-        <ArtistBox artist={artist} />
-        <ArtistBox artist={artist} />
-        <ArtistBox artist={artist} />
+        <ArtistList artists={artists} />
       </View>
     );
   }
