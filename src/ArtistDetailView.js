@@ -5,7 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Text,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -61,7 +60,6 @@ export default class ArtistDetailView extends Component {
     return (
       <View style={styles.container}>
         <ArtistBox artist={artist} />
-        <Text style={styles.header}>Comentarios</Text>
         <CommentList comments={comments} />
         <View style={styles.inputContainer}>
           <TextInput

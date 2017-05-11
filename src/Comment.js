@@ -6,8 +6,8 @@ import {
   Image,
 } from 'react-native'
 
-const DEFAULT_AVATAR = 'https://www.drupal.org/files/issues/default-avatar.png'
-const AVATAR_SIZE = 32
+const DEFAULT_AVATAR = 'https://www.drupal.org/files/issues/default-avatar.png';
+const AVATAR_SIZE = 32;
 
 const Comment = (props) =>
   <View style={styles.comment}>
