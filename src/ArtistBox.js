@@ -8,23 +8,69 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import { firebaseDatabase, firebaseAuth } from './firebase'
 
 export default class ArtistBox extends Component {
 
   state = {
-    liked: false
+    liked: false,
+    likeCount: 0
+  }
+
+  componentWillMount() {
+    const { uid } = firebaseAuth.currentUser;
+    this.getArtistRef().on('value', snapshot => {
+      const artist = snapshot.val()
+      if (artist) {
+        this.setState({
+          likeCount: artist.likeCount,
+          liked: artist.likes && artist.likes[uid]
+        })
+      }
+    })
   }
 
   handlePress = () => {
-    this.setState({ liked: !this.state.liked })
+    this.toggleLike(!this.state.liked)
+  }
+
+  getArtistRef = () => {
+    const { id } = this.props.artist
+    return firebaseDatabase.ref(`artist/${id}`)
+  }
+
+  toggleLike = (liked) => {
+    const { uid } = firebaseAuth.currentUser;
+    this.getArtistRef().transaction(function(artist) {
+      if (artist) {
+        if (artist.likes && artist.likes[uid]) {
+          artist.likeCount--;
+          artist.likes[uid] = null;
+        } else {
+          artist.likeCount++;
+          if (!artist.likes) {
+            artist.likes = {};
+          }
+          artist.likes[uid] = true;
+        }
+      }
+      return artist || {
+        likeCount: 1,
+        likes: {
+          [uid]: true
+        }
+      };
+    });
   }
 
   render() {
-    const { image, name, likes, comments } = this.props.artist;
+    const { image, name, comments } = this.props.artist;
 
     const likeIcon = this.state.liked ?
       <Icon name="ios-heart" size={30} color="#e74c4c" /> :
       <Icon name="ios-heart-outline" size={30} color="gray" />
+
+    const { likeCount } = this.state;
 
     return (
       <View style={styles.artistBox}>
@@ -36,7 +82,7 @@ export default class ArtistBox extends Component {
               <TouchableOpacity onPress={this.handlePress}>
                 {likeIcon}
               </TouchableOpacity>
-              <Text style={styles.count}>{likes}</Text>
+              <Text style={styles.count}>{likeCount}</Text>
             </View>
             <View style={styles.iconContainer}>
               <Icon name="ios-chatboxes-outline" size={30} color="gray" />
